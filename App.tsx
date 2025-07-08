@@ -59,8 +59,8 @@ const App: React.FC = () => {
           
           {/* Filtered Category Breakdown */}
           <div className="space-y-4">
-            <h2 className="text-2xl font-semibold text-white border-t border-slate-700 pt-6">Filtered Category Breakdown</h2>
-            <p className="text-slate-400">From the total dataset, we've filtered and analyzed several key categories. The metrics below represent the data points within these specific groups.</p>
+            <h2 className="text-2xl font-semibold text-white border-t border-slate-700 pt-6">Top 6 Sub Categories in Ransomware</h2>
+            <p className="text-slate-400">From the total dataset, we've filtered and analyzed several key sub categories. The metrics below represent the data points within these specific groups.</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <StatCard 
                 title="Total Reddit Threads" 
@@ -85,6 +85,12 @@ const App: React.FC = () => {
             </div>
           </div>
 
+          {/* Data Table */}
+          <div className="bg-slate-800 p-2 sm:p-4 rounded-xl shadow-lg border border-slate-700">
+            <h2 className="text-xl font-semibold text-white mb-2">Detailed Subcategory Analysis</h2>
+            <CategoryTable data={filteredCategories} />
+          </div>
+
           {/* Charts */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
              <div className="bg-slate-800 p-4 rounded-xl shadow-lg border border-slate-700 h-[420px] flex flex-col">
@@ -95,12 +101,6 @@ const App: React.FC = () => {
                 <h2 className="text-xl font-semibold text-white mb-2">Threads in SERP Top 10</h2>
                 <div className="flex-1 min-h-0"><SerpChart data={top6ByTraffic} /></div>
             </div>
-          </div>
-          
-          {/* Data Table */}
-          <div className="bg-slate-800 p-2 sm:p-4 rounded-xl shadow-lg border border-slate-700">
-            <h2 className="text-xl font-semibold text-white mb-2">Detailed Category Analysis</h2>
-            <CategoryTable data={filteredCategories} />
           </div>
 
         </main>

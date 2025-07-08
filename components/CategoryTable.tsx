@@ -94,11 +94,11 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({ data }) => {
   
   const headers: {key: SortKey, title: string}[] = [
       { key: 'name', title: 'Category Name' },
-      { key: 'totalThreads', title: 'Threads' },
-      { key: 'sumOfTraffic', title: 'Traffic' },
-      { key: 'sumOfKeywords', title: 'Keywords' },
-      { key: 'avgKeywordPosition', title: 'Avg. Position' },
-      { key: 'threadsInTop10', title: 'Threads in Top 10' },
+      { key: 'totalThreads', title: 'No of THREADS' },
+      { key: 'sumOfTraffic', title: 'Total Traffic' },
+      { key: 'sumOfKeywords', title: 'No of Keywords' },
+      { key: 'avgKeywordPosition', title: 'Avg. SERP Position' },
+      { key: 'threadsInTop10', title: 'No of Threads in Top 10' },
   ]
 
   return (
