@@ -28,18 +28,18 @@ export const TrafficChart: React.FC<TrafficChartProps> = ({ data }) => {
   const sortedData = [...data].sort((a, b) => b.sumOfTraffic - a.sumOfTraffic);
 
   return (
-    <div style={{ width: '100%', height: 350 }}>
+    <div style={{ width: '100%', height: 420 }}>
       <ResponsiveContainer>
         <BarChart
           data={sortedData}
-          margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+          margin={{ top: 20, right: 30, left: 20, bottom: 100 }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
           <XAxis
             dataKey="name"
             stroke="#94a3b8"
             interval={0}
-            height={80}
+            height={120}
             tick={props => {
               const { x, y, payload } = props;
               const label = payload.value;
