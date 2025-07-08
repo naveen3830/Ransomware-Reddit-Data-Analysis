@@ -1,7 +1,6 @@
 import React from 'react';
-import { Treemap, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from 'recharts';
 import { CategoryData } from '../types';
-import type { TreemapNode } from 'recharts/types/chart/Treemap';
 
 interface TrafficChartProps {
   data: CategoryData[];
@@ -11,55 +10,6 @@ interface TrafficChartProps {
 const COLORS = [
   '#06b6d4', '#818cf8', '#fbbf24', '#34d399', '#f472b6', '#f87171', '#a78bfa', '#facc15', '#38bdf8', '#f59e42'
 ];
-
-const CustomTreemapContent = (props: TreemapNode) => {
-  const { x, y, width, height, index, payload } = props;
-  const name = payload?.name;
-  const value = payload?.sumOfTraffic;
-  const color = COLORS[index % COLORS.length];
-  const showLabel = width > 80 && height > 40;
-  const showValue = width > 60 && height > 24;
-  return (
-    <g>
-      <rect
-        x={x}
-        y={y}
-        width={width}
-        height={height}
-        fill={color}
-        stroke="#334155"
-        rx={10}
-        style={{ filter: 'drop-shadow(0 1px 4px rgba(0,0,0,0.10))' }}
-      />
-      {showLabel && name && (
-        <text
-          x={x + width / 2}
-          y={y + height / 2 - 6}
-          textAnchor="middle"
-          fill="#fff"
-          fontSize={16}
-          fontWeight="bold"
-          style={{ pointerEvents: 'none' }}
-        >
-          {name.length > 18 ? name.slice(0, 16) + '…' : name}
-        </text>
-      )}
-      {showValue && value !== undefined && (
-        <text
-          x={x + width / 2}
-          y={y + height / 2 + 16}
-          textAnchor="middle"
-          fill="#e0e7ef"
-          fontSize={14}
-          fontWeight="bold"
-          style={{ pointerEvents: 'none' }}
-        >
-          {value.toLocaleString()}
-        </text>
-      )}
-    </g>
-  );
-};
 
 const CustomTooltip: React.FC<{ active?: boolean; payload?: any[] }> = ({ active, payload }) => {
   if (active && payload && payload.length && payload[0].payload) {
@@ -75,24 +25,54 @@ const CustomTooltip: React.FC<{ active?: boolean; payload?: any[] }> = ({ active
 };
 
 export const TrafficChart: React.FC<TrafficChartProps> = ({ data }) => {
-  const sortedData = [...data]
-    .sort((a, b) => b.sumOfTraffic - a.sumOfTraffic)
-    .slice(0, 10)
-    .map((item, idx) => ({ ...item, size: item.sumOfTraffic, color: COLORS[idx % COLORS.length] }));
+  const sortedData = [...data].sort((a, b) => b.sumOfTraffic - a.sumOfTraffic);
 
   return (
     <div style={{ width: '100%', height: 350 }}>
       <ResponsiveContainer>
-        <Treemap
+        <BarChart
           data={sortedData}
-          dataKey="size"
-          nameKey="name"
-          stroke="#334155"
-          aspectRatio={4 / 3}
-          content={CustomTreemapContent}
+          margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
         >
+          <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+          <XAxis
+            dataKey="name"
+            stroke="#94a3b8"
+            interval={0}
+            height={80}
+            tick={props => {
+              const { x, y, payload } = props;
+              const label = payload.value;
+              return (
+                <g transform={`translate(${x},${y})`}>
+                  <text
+                    x={0}
+                    y={0}
+                    dy={16}
+                    textAnchor="end"
+                    fill="#cbd5e1"
+                    fontSize={12}
+                    fontWeight="bold"
+                    transform="rotate(-35)"
+                  >
+                    {label.length > 32 ? label.slice(0, 30) + '…' : label}
+                  </text>
+                </g>
+              );
+            }}
+          />
+          <YAxis
+            stroke="#94a3b8"
+            allowDecimals={false}
+            label={{ value: 'Traffic', angle: -90, position: 'insideLeft', fill: '#94a3b8', fontSize: 12 }}
+          />
           <Tooltip content={<CustomTooltip />} />
-        </Treemap>
+          <Bar dataKey="sumOfTraffic" fill="#06b6d4">
+            {sortedData.map((entry, idx) => (
+              <Cell key={`cell-${idx}`} fill={COLORS[idx % COLORS.length]} />
+            ))}
+          </Bar>
+        </BarChart>
       </ResponsiveContainer>
     </div>
   );

@@ -1,5 +1,4 @@
-
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { CategoryData } from '../types';
 import { ArrowUpIcon, ArrowDownIcon } from './Icons';
 
@@ -35,9 +34,36 @@ const SortableHeader: React.FC<{
     );
 };
 
+// Helper to parse CSV and get up to 2 non-archived URLs per category
+const getCategoryUrls = async (): Promise<Record<string, string[]>> => {
+  const response = await fetch('Reddit_Archived.csv');
+  const text = await response.text();
+  const lines = text.split('\n');
+  const header = lines[0].split(',');
+  const urlIdx = header.indexOf('URL');
+  const catIdx = header.indexOf('Category');
+  const archIdx = header.indexOf('reddit_is_archived');
+  const map: Record<string, string[]> = {};
+  for (let i = 1; i < lines.length; i++) {
+    const row = lines[i].split(',');
+    if (row.length < Math.max(urlIdx, catIdx, archIdx) + 1) continue;
+    if (row[archIdx]?.trim().toLowerCase() === 'no') {
+      const cat = row[catIdx]?.trim();
+      if (!map[cat]) map[cat] = [];
+      if (map[cat].length < 2) map[cat].push(row[urlIdx]);
+    }
+  }
+  return map;
+};
 
 export const CategoryTable: React.FC<CategoryTableProps> = ({ data }) => {
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: SortDirection } | null>(null);
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const [categoryUrls, setCategoryUrls] = useState<Record<string, string[]>>({});
+
+  useEffect(() => {
+    getCategoryUrls().then(setCategoryUrls);
+  }, []);
 
   const sortedData = useMemo(() => {
     let sortableData = [...data];
@@ -51,6 +77,9 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({ data }) => {
         }
         return 0;
       });
+    } else {
+      // Default sort by sumOfTraffic descending
+      sortableData.sort((a, b) => b.sumOfTraffic - a.sumOfTraffic);
     }
     return sortableData;
   }, [data, sortConfig]);
@@ -90,14 +119,40 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({ data }) => {
         </thead>
         <tbody className="bg-slate-800 divide-y divide-slate-700">
           {sortedData.map((item) => (
-            <tr key={item.name} className="hover:bg-slate-700/40 transition-colors">
-              <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">{item.name}</td>
-              <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-300 text-center">{item.totalThreads.toLocaleString()}</td>
-              <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-300 text-center">{item.sumOfTraffic.toLocaleString()}</td>
-              <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-300 text-center">{item.sumOfKeywords.toLocaleString()}</td>
-              <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-300 text-center">{item.avgKeywordPosition.toFixed(1)}</td>
-              <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-300 text-center">{item.threadsInTop10.toLocaleString()}</td>
-            </tr>
+            <React.Fragment key={item.name}>
+              <tr className="hover:bg-slate-700/40 transition-colors">
+                <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">
+                  <button
+                    className="mr-2 text-cyan-400 hover:underline"
+                    onClick={() => setExpanded(e => ({ ...e, [item.name]: !e[item.name] }))}
+                  >
+                    {(expanded[item.name] ?? false) ? '▼' : '▶'}
+                  </button>
+                  {item.name}
+                </td>
+                <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-300 text-center">{item.totalThreads.toLocaleString()}</td>
+                <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-300 text-center">{item.sumOfTraffic.toLocaleString()}</td>
+                <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-300 text-center">{item.sumOfKeywords.toLocaleString()}</td>
+                <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-300 text-center">{item.avgKeywordPosition.toFixed(1)}</td>
+                <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-300 text-center">{item.threadsInTop10.toLocaleString()}</td>
+              </tr>
+              {(expanded[item.name] ?? false) && (categoryUrls[item.name] ?? []).length > 0 && (
+                <tr>
+                  <td colSpan={6} className="px-4 pb-4 pt-0">
+                    <div className="bg-slate-700/40 rounded-lg p-3">
+                      <div className="font-semibold text-slate-200 mb-1">Sample Reddit Threads:</div>
+                      <ul className="list-disc pl-6">
+                        {(categoryUrls[item.name] ?? []).map((url, idx) => (
+                          <li key={url}>
+                            <a href={url} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline break-all">{url}</a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </React.Fragment>
           ))}
         </tbody>
       </table>

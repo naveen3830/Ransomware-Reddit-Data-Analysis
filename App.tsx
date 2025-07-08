@@ -9,6 +9,11 @@ import { ThreadsIcon, TrafficIcon, KeywordIcon, CheckCircleIcon } from './compon
 const App: React.FC = () => {
   const filteredCategories = CATEGORIES_DATA.filter(d => d.name !== 'Other');
 
+  // Top 6 categories by traffic
+  const top6ByTraffic = [...filteredCategories]
+    .sort((a, b) => b.sumOfTraffic - a.sumOfTraffic)
+    .slice(0, 6);
+
   const filteredTotals = {
     threads: filteredCategories.reduce((sum, cat) => sum + cat.totalThreads, 0),
     traffic: filteredCategories.reduce((sum, cat) => sum + cat.sumOfTraffic, 0),
@@ -84,11 +89,11 @@ const App: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
              <div className="bg-slate-800 p-4 rounded-xl shadow-lg border border-slate-700 h-[420px] flex flex-col">
                 <h2 className="text-xl font-semibold text-white mb-2">Traffic by Category</h2>
-                <div className="flex-1 min-h-0"><TrafficChart data={filteredCategories} /></div>
+                <div className="flex-1 min-h-0"><TrafficChart data={top6ByTraffic} /></div>
             </div>
              <div className="bg-slate-800 p-4 rounded-xl shadow-lg border border-slate-700 h-[420px] flex flex-col">
                 <h2 className="text-xl font-semibold text-white mb-2">Threads in SERP Top 10</h2>
-                <div className="flex-1 min-h-0"><SerpChart data={filteredCategories} /></div>
+                <div className="flex-1 min-h-0"><SerpChart data={top6ByTraffic} /></div>
             </div>
           </div>
           
