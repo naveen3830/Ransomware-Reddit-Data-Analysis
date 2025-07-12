@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/naveen3830/Ransomware-Reddit-Data-Analysis/compare/v1.1.0...v1.1.1) (2025-07-12)
+
+
+### Bug Fixes
+
+* expose version to code ([ef97241](https://github.com/naveen3830/Ransomware-Reddit-Data-Analysis/commit/ef972410e29bdf792363d4da13669306791306bd))
+
 # [1.1.0](https://github.com/naveen3830/Ransomware-Reddit-Data-Analysis/compare/v1.0.0...v1.1.0) (2025-07-12)
 
 
