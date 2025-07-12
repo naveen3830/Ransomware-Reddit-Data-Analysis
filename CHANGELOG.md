@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/naveen3830/Ransomware-Reddit-Data-Analysis/compare/v1.0.0...v1.1.0) (2025-07-12)
+
+
+### Features
+
+* add hover effect on statistics ([2113ab5](https://github.com/naveen3830/Ransomware-Reddit-Data-Analysis/commit/2113ab5a327f8dd5ec9ca47fde4757a5a5d1642a))
+
 # 1.0.0 (2025-07-12)
 
 
