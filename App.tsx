@@ -1,3 +1,7 @@
+/// <reference types="vite/client" />
+
+declare const __APP_VERSION__: string;
+
 import React from 'react';
 import { CATEGORIES_DATA, TOTALS } from './constants';
 import StatCard from './components/StatCard';
@@ -5,6 +9,7 @@ import { CategoryTable } from './components/CategoryTable';
 import { TrafficChart } from './components/TrafficChart';
 import { SerpChart } from './components/SerpChart';
 import { ThreadsIcon, TrafficIcon, KeywordIcon, CheckCircleIcon } from './components/Icons';
+import { VersionInfo } from './components/VersionInfo';
 
 const App: React.FC = () => {
   const filteredCategories = CATEGORIES_DATA.filter(d => d.name !== 'Other');
@@ -105,6 +110,7 @@ const App: React.FC = () => {
 
         </main>
       </div>
+      <VersionInfo />
     </div>
   );
 };

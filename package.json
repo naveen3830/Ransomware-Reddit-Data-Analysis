@@ -1,12 +1,13 @@
 {
-  "name": "copy-of-copy-of-reddit-ransomware-analysis-dashboard",
+  "name": "reddit-ransomware-analysis-dashboard",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepare": "husky"
   },
   "dependencies": {
     "d3-scale-chromatic": "^3.1.0",
@@ -15,10 +16,19 @@
     "recharts": "^3.0.2"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.3",
+    "@semantic-release/release-notes-generator": "^14.0.3",
     "@types/d3-scale-chromatic": "^3.1.0",
     "@types/node": "^22.14.0",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
+    "husky": "^9.1.7",
+    "semantic-release": "^24.2.7",
     "typescript": "~5.7.2",
     "vite": "^6.2.0"
   }
